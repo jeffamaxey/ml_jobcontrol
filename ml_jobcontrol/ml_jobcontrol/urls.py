@@ -11,8 +11,8 @@ urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name='base.html')),
 
     # Examples:
-    # url(r'^$', 'ml_jobcontrol_project.views.home', name='home'),
-    # url(r'^ml_jobcontrol_project/', include('ml_jobcontrol_project.foo.urls')),
+    # url(r'^$', 'ml_jobcontrol.views.home', name='home'),
+    # url(r'^ml_jobcontrol/', include('ml_jobcontrol.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

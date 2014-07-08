@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# ml_jobcontrol_project documentation build configuration file, created by
+# ml_jobcontrol documentation build configuration file, created by
 # sphinx-quickstart on Sun Feb 17 11:46:20 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'ml_jobcontrol_project'
+project = u'ml_jobcontrol'
 copyright = u'2014, ChangeMyName'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ml_jobcontrol_projectdoc'
+htmlhelp_basename = 'ml_jobcontroldoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'ml_jobcontrol_project.tex', u'ml_jobcontrol_project Documentation',
+  ('index', 'ml_jobcontrol.tex', u'ml_jobcontrol Documentation',
    u'ChangeToMyName', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'ml_jobcontrol_project', u'ml_jobcontrol_project Documentation',
+    ('index', 'ml_jobcontrol', u'ml_jobcontrol Documentation',
      [u'ChangeToMyName'], 1)
 ]
 
@@ -227,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'ml_jobcontrol_project', u'ml_jobcontrol_project Documentation',
-   u'ChangeToMyName', 'ml_jobcontrol_project', 'One line description of project.',
+  ('index', 'ml_jobcontrol', u'ml_jobcontrol Documentation',
+   u'ChangeToMyName', 'ml_jobcontrol', 'One line description of project.',
    'Miscellaneous'),
 ]
 

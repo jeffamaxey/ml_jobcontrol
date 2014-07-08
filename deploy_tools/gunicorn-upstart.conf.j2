@@ -5,9 +5,9 @@ stop on shutdown
 
 respawn
 
-chdir /home/jochen/sites/{{ host }}/source
-exec ../virtualenv/bin/gunicorn \
+chdir /home/jochen/sites/{{ host }}/source/ml_jobcontrol
+exec ../../virtualenv/bin/gunicorn \
     --bind unix:/tmp/{{ host }}.socket \
-    --access-logfile ../access.log \
-    --error-logfile ../error.log \
+    --access-logfile ../../access.log \
+    --error-logfile ../../error.log \
     ml_jobcontrol.wsgi:application
