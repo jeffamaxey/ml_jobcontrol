@@ -10,5 +10,5 @@ exec ../../virtualenv/bin/gunicorn \
     --bind unix:/tmp/{{ host }}.socket \
     --access-logfile ../../access.log \
     --error-logfile ../../error.log \
-    --env SECRET_KEY="{{ lookup('env','SECRET_KEY') }}"
+    --env SECRET_KEY="{{ lookup('env','SECRET_KEY') }}" \
     ml_jobcontrol.wsgi:application
