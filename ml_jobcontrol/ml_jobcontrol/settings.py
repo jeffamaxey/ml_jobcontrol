@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
+    'ml_jobcontrol_api',
 )
 
 MIDDLEWARE_CLASSES = (
