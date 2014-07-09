@@ -18,10 +18,14 @@ from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
 
 # Local imports
+from .permissions import IsOwnerOrReadOnly
+
 from .models import MLDataSet
+from .models import MLClassificationTestSet
+
 from .serializers import UserSerializer
 from .serializers import MLDataSetSerializer
-from .permissions import IsOwnerOrReadOnly
+from .serializers import MLClassificationTestSetSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +37,20 @@ class MLDataSetViewSet(viewsets.ModelViewSet):
     """
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
+
+    def pre_save(self, obj):
+        obj.owner = self.request.user
+
+
+class MLClassificationTestSetViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = MLClassificationTestSet.objects.all()
+    serializer_class = MLClassificationTestSetSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
 

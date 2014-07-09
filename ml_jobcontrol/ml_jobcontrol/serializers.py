@@ -11,12 +11,15 @@ from rest_framework import serializers
 
 # Local imports
 from .models import MLDataSet
+from .models import MLClassificationTestSet
 
 logger = logging.getLogger(__name__)
 
 
 class MLDataSetSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
+    mlclassificationtestsets = serializers.HyperlinkedRelatedField(many=True,
+        view_name='mlclassificationtestset-detail')
 
     class Meta:
         model = MLDataSet
@@ -30,3 +33,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'mldatasets')
+
+
+class MLClassificationTestSetSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.Field(source='owner.username')
+
+    class Meta:
+        model = MLClassificationTestSet
+        fields = ('id', 'train_num', 'test_num', 'owner')
