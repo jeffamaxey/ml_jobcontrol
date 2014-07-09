@@ -15,7 +15,7 @@ from .models import MLDataSet
 logger = logging.getLogger(__name__)
 
 
-class MLDataSetSerializer(serializers.ModelSerializer):
+class MLDataSetSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
 
     class Meta:
@@ -23,8 +23,9 @@ class MLDataSetSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'url', 'owner')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    mldatasets = serializers.PrimaryKeyRelatedField(many=True)
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    mldatasets = serializers.HyperlinkedRelatedField(many=True,
+        view_name='mldataset-detail')
 
     class Meta:
         model = User
