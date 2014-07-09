@@ -16,9 +16,11 @@ logger = logging.getLogger(__name__)
 
 
 class MLDataSetSerializer(serializers.ModelSerializer):
+    owner = serializers.Field(source='owner.username')
+
     class Meta:
         model = MLDataSet
-        fields = ('id', 'name', 'url')
+        fields = ('id', 'name', 'url', 'owner')
 
 
 class UserSerializer(serializers.ModelSerializer):
