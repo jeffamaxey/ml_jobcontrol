@@ -28,10 +28,16 @@ class MLDataSetList(generics.ListCreateAPIView):
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
 
+    def pre_save(self, obj):
+        obj.owner = self.request.user
+
 
 class MLDataSetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
+
+    def pre_save(self, obj):
+        obj.owner = self.request.user
 
 
 class UserList(generics.ListAPIView):
