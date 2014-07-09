@@ -29,6 +29,8 @@ urlpatterns = patterns('',
     # url(r'^ml_jobcontrol/', include('ml_jobcontrol.foo.urls')),
     url(r'^mldatasets/$', views.MLDataSetList.as_view()),
     url(r'^mldatasets/(?P<pk>[0-9]+)/$', views.MLDataSetDetail.as_view()),
+    url(r'^users/$', views.UserList.as_view()),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
