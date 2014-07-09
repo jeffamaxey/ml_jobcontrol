@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
+from rest_framework import permissions
 
 # Local imports
 from .models import MLDataSet
@@ -28,6 +29,8 @@ class MLDataSetList(generics.ListCreateAPIView):
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
 
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     def pre_save(self, obj):
         obj.owner = self.request.user
 
@@ -35,6 +38,8 @@ class MLDataSetList(generics.ListCreateAPIView):
 class MLDataSetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
+
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def pre_save(self, obj):
         obj.owner = self.request.user
