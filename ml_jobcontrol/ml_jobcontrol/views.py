@@ -18,6 +18,7 @@ from rest_framework import permissions
 from .models import MLDataSet
 from .serializers import UserSerializer
 from .serializers import MLDataSetSerializer
+from .permissions import IsOwnerOrReadOnly
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,8 @@ class MLDataSetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
 
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
 
     def pre_save(self, obj):
         obj.owner = self.request.user
