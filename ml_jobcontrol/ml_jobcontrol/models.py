@@ -37,15 +37,15 @@ class MLModelConfig(models.Model):
     json_config  = models.TextField(unique=True)
 
 
-class MLResult(models.Model)
+class MLScore(TimeStampedModel):
+    name = models.CharField(max_length=100)
+
+
+class MLResult(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     mlmodel_config = models.ForeignKey(MLModelConfig)
     mlclassification_testset = models.ForeignKey(MLClassificationTestSet)
     scores = models.ManyToManyField(MLScore, through='MLResultScore')
-
-
-class MLScore(TimeStampedModel):
-    name = models.CharField(max_length=100)
 
 
 class MLResultScore(models.Model):
