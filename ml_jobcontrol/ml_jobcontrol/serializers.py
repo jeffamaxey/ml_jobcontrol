@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 # Local imports
+from .models import MLModel
 from .models import MLDataSet
 from .models import MLClassificationTestSet
 
@@ -41,3 +42,11 @@ class MLClassificationTestSetSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MLClassificationTestSet
         fields = ('id', 'train_num', 'test_num', 'owner')
+
+
+class MLModelSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.Field(source='owner.username')
+
+    class Meta:
+        model = MLModel
+        fields = ('id', 'name', 'import_path', 'owner')

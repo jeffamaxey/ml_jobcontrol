@@ -26,6 +26,7 @@ router = DefaultRouter()
 router.register(r'mldatasets', views.MLDataSetViewSet)
 router.register(r'mlclassificationtestsets',
     views.MLClassificationTestSetViewSet)
+router.register(r'mlmodels', views.MLModelViewSet)
 router.register(r'users', views.UserViewSet)
 
 urlpatterns = patterns('',

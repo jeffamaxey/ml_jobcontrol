@@ -20,10 +20,12 @@ from rest_framework.decorators import api_view
 # Local imports
 from .permissions import IsOwnerOrReadOnly
 
+from .models import MLModel
 from .models import MLDataSet
 from .models import MLClassificationTestSet
 
 from .serializers import UserSerializer
+from .serializers import MLModelSerializer
 from .serializers import MLDataSetSerializer
 from .serializers import MLClassificationTestSetSerializer
 
@@ -51,6 +53,20 @@ class MLClassificationTestSetViewSet(viewsets.ModelViewSet):
     """
     queryset = MLClassificationTestSet.objects.all()
     serializer_class = MLClassificationTestSetSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
+
+    def pre_save(self, obj):
+        obj.owner = self.request.user
+
+
+class MLModelViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = MLModel.objects.all()
+    serializer_class = MLModelSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
 
