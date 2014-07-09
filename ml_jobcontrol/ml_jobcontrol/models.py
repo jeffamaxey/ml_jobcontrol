@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 class MLDataSet(TimeStampedModel):
     name = models.CharField(max_length=100)
     url = models.URLField(unique=True)
+    owner = models.ForeignKey('auth.User', related_name='mldatasets')
 
 
 class MLClassificationTestSet(TimeStampedModel):

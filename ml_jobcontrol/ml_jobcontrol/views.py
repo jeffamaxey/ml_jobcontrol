@@ -10,6 +10,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 
 # Local imports
 from .models import MLDataSet
@@ -18,18 +19,13 @@ from .serializers import MLDataSetSerializer
 logger = logging.getLogger(__name__)
 
 
-class MLDataSetList(APIView):
+class MLDataSetList(generics.ListCreateAPIView):
     """
-    List all MLDataSets, or create a new mldataset.
+    List all MLDataSets, or create a new mldataset. *Foo*
     """
-    def get(self, request, format=None):
-        mldatasets = MLDataSet.objects.all()
-        serializer = MLDataSetSerializer(mldatasets, many=True)
-        return Response(serializer.data)
+    queryset = MLDataSet.objects.all()
+    serializer_class = MLDataSetSerializer
 
-    def post(self, request, format=None):
-        serializer = MLDataSetSerializer(data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class MLDataSetDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MLDataSet.objects.all()
+    serializer_class = MLDataSetSerializer
