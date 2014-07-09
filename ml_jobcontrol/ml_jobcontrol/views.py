@@ -25,13 +25,6 @@ from .permissions import IsOwnerOrReadOnly
 
 logger = logging.getLogger(__name__)
 
-@api_view(('GET',))
-def api_root(request, format=None):
-    return Response({
-        'users': reverse('user-list', request=request, format=format),
-        'mldatasets': reverse('mldataset-list', request=request, format=format)
-    })
-
 
 class MLDataSetViewSet(viewsets.ModelViewSet):
     """
