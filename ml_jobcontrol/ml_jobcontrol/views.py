@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class MLDataSetList(generics.ListCreateAPIView):
     """
-    List all MLDataSets, or create a new mldataset. *Foo*
+    List all MLDataSets, or create a new mldataset.
     """
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
