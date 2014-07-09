@@ -20,6 +20,9 @@ class MLDataSetSerializer(serializers.ModelSerializer):
         model = MLDataSet
         fields = ('id', 'name', 'url')
 
+    def pre_save(self, obj):
+        obj.owner = self.request.user
+
 
 class UserSerializer(serializers.ModelSerializer):
     mldatasets = serializers.PrimaryKeyRelatedField(many=True)
