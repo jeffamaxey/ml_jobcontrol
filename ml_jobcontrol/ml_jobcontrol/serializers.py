@@ -12,6 +12,7 @@ from rest_framework import serializers
 # Local imports
 from .models import MLModel
 from .models import MLDataSet
+from .models import MLModelConfig
 from .models import MLClassificationTestSet
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,15 @@ class MLClassificationTestSetSerializer(serializers.HyperlinkedModelSerializer):
 
 class MLModelSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
+    mlmodelconfigs = serializers.HyperlinkedRelatedField(many=True,
+        view_name='modelconfig-detail')
 
     class Meta:
         model = MLModel
-        fields = ('id', 'name', 'import_path', 'owner')
+        fields = ('id', 'name', 'import_path', 'mlmodelconfigs', 'owner')
+
+
+class MLModelConfigSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = MLModelConfig
+        fields = ('id', 'created', 'json_config', 'mlmodel')

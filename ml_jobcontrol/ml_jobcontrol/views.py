@@ -22,11 +22,13 @@ from .permissions import IsOwnerOrReadOnly
 
 from .models import MLModel
 from .models import MLDataSet
+from .models import MLModelConfig
 from .models import MLClassificationTestSet
 
 from .serializers import UserSerializer
 from .serializers import MLModelSerializer
 from .serializers import MLDataSetSerializer
+from .serializers import MLModelConfigSerializer
 from .serializers import MLClassificationTestSetSerializer
 
 logger = logging.getLogger(__name__)
@@ -72,6 +74,16 @@ class MLModelViewSet(viewsets.ModelViewSet):
 
     def pre_save(self, obj):
         obj.owner = self.request.user
+
+
+class MLModelConfigViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = MLModelConfig.objects.all()
+    serializer_class = MLModelConfigSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
