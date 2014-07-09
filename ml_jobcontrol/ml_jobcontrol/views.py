@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
@@ -32,23 +33,13 @@ def api_root(request, format=None):
     })
 
 
-class MLDataSetList(generics.ListCreateAPIView):
+class MLDataSetViewSet(viewsets.ModelViewSet):
     """
-    List all MLDataSets, or create a new mldataset.
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
     """
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
-
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def pre_save(self, obj):
-        obj.owner = self.request.user
-
-
-class MLDataSetDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = MLDataSet.objects.all()
-    serializer_class = MLDataSetSerializer
-
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
 
@@ -56,11 +47,9 @@ class MLDataSetDetail(generics.RetrieveUpdateDestroyAPIView):
         obj.owner = self.request.user
 
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserDetail(generics.RetrieveAPIView):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
