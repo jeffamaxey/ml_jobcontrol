@@ -25,7 +25,7 @@ class MLDataSetSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     mldatasets = serializers.HyperlinkedRelatedField(many=True,
-        view_name='mldatasets-detail')
+        view_name='mldataset-detail')
 
     class Meta:
         model = User
