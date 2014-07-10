@@ -20,13 +20,16 @@ from rest_framework.test import APIRequestFactory
 from rest_framework.test import force_authenticate
 
 # Local imports
+from .models import MLModel
 from .models import MLScore
 from .models import MLDataSet
+from .models import MLModelConfig
+from .models import MLClassificationTestSet
 from .views import MLScoreViewSet
 
 logger = logging.getLogger(__name__)
 
-class RestApiTests(APITestCase):
+class RestApiBaseTests(APITestCase):
     def setUp(self):
         MLScore.objects.get_or_create(name="foobar")
         self.factory = APIRequestFactory()
@@ -104,3 +107,43 @@ class RestApiTests(APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class RestApiUseCaseTests(APITestCase):
+    def setUp(self):
+        self.mlscore, created = MLScore.objects.get_or_create(name="foobar")
+        self.user = User.objects.create_user(
+            username='foo', email='foo@…', password='secret')
+        mldataset, created = MLDataSet.objects.get_or_create(
+            name="foo dataset", url="http://example.org", owner=self.user)
+        mlmodel, created = MLModel.objects.get_or_create(name="foo model",
+            import_path="classifiers.Foo", owner=self.user)
+        self.mlconfig, created = MLModelConfig.objects.get_or_create(
+            mlmodel=mlmodel, json_config='{"asdf":"bsdf"}')
+        self.mltestset, created = \
+            MLClassificationTestSet.objects.get_or_create(
+                mldataset=mldataset, train_num=1000, test_num=300,
+                owner=self.user)
+
+    def test_submit_result(self):
+        """
+        """
+        url = reverse("mlresult-list")
+        self.client.force_authenticate(user=self.user)
+        mlconfig_url = reverse("mlmodelconfig-detail",
+            kwargs={"pk": self.mlconfig.pk})
+        mltestset_url = reverse("mlclassificationtestset-detail",
+            kwargs={"pk": self.mltestset.pk})
+        mlscore_url = reverse("mlscore-detail",
+            kwargs={"pk": self.mlscore.pk})
+        data = {
+            "mlmodel_config": mlconfig_url,
+            "mlclassification_testset": mltestset_url,
+            "scores": [ {
+                "mlscore": mlscore_url,
+                "score": 0.3,
+            },]
+        }
+        response = self.client.post(url, data, format='json')
+        pprint(response.status_code)
+        pprint(response.content)
