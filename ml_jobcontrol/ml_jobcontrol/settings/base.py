@@ -265,8 +265,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
 #        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
-
-    # Make json default format for tests
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 ########## END DJANGO REST FRAMEWORK CONFIGURATION
