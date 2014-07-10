@@ -21,14 +21,20 @@ from rest_framework.decorators import api_view
 from .permissions import IsOwnerOrReadOnly
 
 from .models import MLModel
+from .models import MLScore
+from .models import MLResult
 from .models import MLDataSet
 from .models import MLModelConfig
+from .models import MLResultScore
 from .models import MLClassificationTestSet
 
 from .serializers import UserSerializer
 from .serializers import MLModelSerializer
+from .serializers import MLScoreSerializer
+from .serializers import MLResultSerializer
 from .serializers import MLDataSetSerializer
 from .serializers import MLModelConfigSerializer
+from .serializers import MLResultScoreSerializer
 from .serializers import MLClassificationTestSetSerializer
 
 logger = logging.getLogger(__name__)
@@ -83,6 +89,36 @@ class MLModelConfigViewSet(viewsets.ModelViewSet):
     """
     queryset = MLModelConfig.objects.all()
     serializer_class = MLModelConfigSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class MLResultViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = MLResult.objects.all()
+    serializer_class = MLResultSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class MLResultScoreViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = MLResultScore.objects.all()
+    serializer_class = MLResultScoreSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class MLScoreViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = MLScore.objects.all()
+    serializer_class = MLScoreSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
