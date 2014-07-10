@@ -39,7 +39,7 @@ class MLModel(TimeStampedModel):
 
 class MLModelConfig(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    mlmodel = models.ForeignKey(MLModel, related_name='mlmodel')
+    mlmodel = models.ForeignKey(MLModel, related_name='mlmodelconfigs')
     json_config  = models.TextField(unique=True)
 
 

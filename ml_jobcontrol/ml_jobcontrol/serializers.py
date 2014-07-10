@@ -50,7 +50,7 @@ class MLClassificationTestSetSerializer(serializers.HyperlinkedModelSerializer):
 class MLModelSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
     mlmodelconfigs = serializers.HyperlinkedRelatedField(many=True,
-        view_name='modelconfig-detail')
+        view_name='mlmodelconfig-detail')
 
     class Meta:
         model = MLModel
@@ -58,6 +58,9 @@ class MLModelSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MLModelConfigSerializer(serializers.HyperlinkedModelSerializer):
+    mlmodel = serializers.HyperlinkedRelatedField(
+        view_name='mlmodel-detail')
+
     class Meta:
         model = MLModelConfig
         fields = ('id', 'created', 'json_config', 'mlmodel')

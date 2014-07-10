@@ -83,7 +83,7 @@ class MLModelConfigViewSet(viewsets.ModelViewSet):
     """
     queryset = MLModelConfig.objects.all()
     serializer_class = MLModelConfigSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
