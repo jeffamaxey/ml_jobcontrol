@@ -111,7 +111,11 @@ class RestApiBaseTests(APITestCase):
 
 class RestApiUseCaseTests(APITestCase):
     def setUp(self):
-        self.mlscore, created = MLScore.objects.get_or_create(name="foobar")
+        self.mlscores = []
+        mlscore, created = MLScore.objects.get_or_create(name="precision")
+        self.mlscores.append(mlscore)
+        mlscore, created = MLScore.objects.get_or_create(name="recall")
+        self.mlscores.append(mlscore)
         self.user = User.objects.create_user(
             username='foo', email='foo@…', password='secret')
         mldataset, created = MLDataSet.objects.get_or_create(
@@ -127,23 +131,32 @@ class RestApiUseCaseTests(APITestCase):
 
     def test_submit_result(self):
         """
+        Submit complete precision/recall test result for known
+        model config + classification testset.
         """
-        url = reverse("mlresult-list")
+        mlresult_url = reverse("mlresult-list")
         self.client.force_authenticate(user=self.user)
         mlconfig_url = reverse("mlmodelconfig-detail",
             kwargs={"pk": self.mlconfig.pk})
         mltestset_url = reverse("mlclassificationtestset-detail",
             kwargs={"pk": self.mltestset.pk})
-        mlscore_url = reverse("mlscore-detail",
-            kwargs={"pk": self.mlscore.pk})
+        mlscore_urls = [reverse("mlscore-detail",
+            kwargs={"pk": mlscore.pk}) for mlscore in self.mlscores]
+        pprint(mlscore_urls)
         data = {
             "mlmodel_config": mlconfig_url,
             "mlclassification_testset": mltestset_url,
-            "scores": [ {
-                "mlscore": mlscore_url,
-                "score": 0.3,
-            },]
         }
-        response = self.client.post(url, data, format='json')
-        pprint(response.status_code)
-        pprint(response.content)
+        response = self.client.post(mlresult_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_mlresult_url = reverse("mlresult-detail",
+            kwargs={"pk": response.data["id"]})
+        mlresultscore_url = reverse("mlresultscore-list")
+        for num, mlscore_url in enumerate(mlscore_urls):
+            data = {
+                "mlresult": new_mlresult_url,
+                "mlscore": mlscore_url,
+                "score": 1.0 / float(num + 1),
+            }
+            response = self.client.post(mlresultscore_url, data, format='json')
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -67,20 +67,6 @@ class MLModelConfigSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'created', 'json_config', 'mlmodel')
 
 
-class MLResultSerializer(serializers.HyperlinkedModelSerializer):
-    mlmodel_config = serializers.HyperlinkedRelatedField(
-        view_name='mlmodelconfig-detail')
-    mlclassification_testset = serializers.HyperlinkedRelatedField(
-        view_name='mlclassificationtestset-detail')
-    scores = serializers.HyperlinkedRelatedField(many=True,
-        view_name='mlresultscore-detail')
-
-    class Meta:
-        model = MLResult
-        fields = ('id', 'created', 'mlmodel_config',
-            'mlclassification_testset', 'scores')
-
-
 class MLResultScoreSerializer(serializers.HyperlinkedModelSerializer):
     mlresult = serializers.HyperlinkedRelatedField(
         view_name='mlresult-detail')
@@ -90,6 +76,21 @@ class MLResultScoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MLResultScore
         fields = ('id', 'mlresult', 'mlscore', "score")
+
+
+class MLResultSerializer(serializers.HyperlinkedModelSerializer):
+    mlmodel_config = serializers.HyperlinkedRelatedField(
+        view_name='mlmodelconfig-detail')
+    mlclassification_testset = serializers.HyperlinkedRelatedField(
+        view_name='mlclassificationtestset-detail')
+    # does not work without read_only=True
+    scores = serializers.HyperlinkedRelatedField(many=True,
+        view_name='mlresultscore-detail', read_only=True)
+
+    class Meta:
+        model = MLResult
+        fields = ('id', 'created', 'mlmodel_config',
+            'mlclassification_testset', 'scores')
 
 
 class MLScoreSerializer(serializers.HyperlinkedModelSerializer):
