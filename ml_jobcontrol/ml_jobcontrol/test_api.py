@@ -21,6 +21,7 @@ from rest_framework.test import force_authenticate
 
 # Local imports
 from .models import MLScore
+from .models import MLDataSet
 from .views import MLScoreViewSet
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,8 @@ class RestApiTests(APITestCase):
         self.factory = APIRequestFactory()
         self.user = User.objects.create_user(
             username='foo', email='foo@…', password='secret')
+        MLDataSet.objects.get_or_create(name="foobar",
+            url="http://example.org", owner=self.user)
 
     def test_scores_list(self):
         """
@@ -48,8 +51,7 @@ class RestApiTests(APITestCase):
         """
         url = reverse('mlmodel-list')
         data = {'name': 'foobar', 'import_path': 'classifiers.Foo'}
-        tmp_user = User(username="foobar", password='foobar')
-        self.client.force_authenticate(user=tmp_user)
+        self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format='json')
         rdata = {k: v for k, v in response.data.iteritems()
             if k in ("name", "import_path")}
@@ -61,7 +63,8 @@ class RestApiTests(APITestCase):
         Test with request factory instead of api client.
         """
         data = {'name': 'asdf'}
-        request = self.factory.post('/mlscore/1/', data, format='json')
+        url = reverse("mlscore-list")
+        request = self.factory.post(url, data, format='json')
         request.user = self.user
         force_authenticate(request, user=self.user)
         view = MLScoreViewSet.as_view({'post': 'create'})
@@ -70,3 +73,34 @@ class RestApiTests(APITestCase):
             if k in ("name",)}
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(rdata, data)
+
+    def test_mldataset_list(self):
+        """
+        Just test wether a setUp created mldataset got into db.
+        """
+        url = reverse("mldataset-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 1)
+
+    def test_only_owner_delete_mldataset(self):
+        """
+        Ensure only the owner has the permission to delete a mldataset.
+        """
+        mld = MLDataSet.objects.all()[0]
+        url = reverse('mldataset-detail', kwargs={'pk': mld.pk})
+        tmp_user = User(username="foobar", password='foobar')
+        self.client.force_authenticate(user=tmp_user)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_owner_delete_mldataset(self):
+        """
+        Ensure the owner has the permission to delete a mldataset.
+        """
+        mld = MLDataSet.objects.all()[0]
+        url = reverse('mldataset-detail', kwargs={'pk': mld.pk})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
