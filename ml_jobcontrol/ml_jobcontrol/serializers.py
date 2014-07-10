@@ -39,10 +39,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class MLClassificationTestSetSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
+    mldataset = serializers.HyperlinkedRelatedField(
+        view_name="mldataset-detail")
 
     class Meta:
         model = MLClassificationTestSet
-        fields = ('id', 'train_num', 'test_num', 'owner')
+        fields = ('id', 'train_num', 'test_num', 'mldataset', 'owner')
 
 
 class MLModelSerializer(serializers.HyperlinkedModelSerializer):
