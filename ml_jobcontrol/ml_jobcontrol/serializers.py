@@ -52,8 +52,6 @@ class MLClassificationTestSetSerializer(serializers.HyperlinkedModelSerializer):
 
 class MLModelSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.Field(source='owner.username')
-    mlmodelconfigs = serializers.HyperlinkedRelatedField(many=True,
-        view_name='mlmodelconfig-detail')
 
     class Meta:
         model = MLModel
