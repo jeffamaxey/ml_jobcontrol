@@ -38,7 +38,7 @@ urlpatterns = patterns('',
 
     # Examples:
     # url(r'^$', 'ml_jobcontrol.views.home', name='home'),
-    url(r'^', include(router.urls)),
+    url(r'^api/v1/', include(router.urls)),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
