@@ -27,6 +27,7 @@ router.register(r'mlclassificationtestsets',
 router.register(r'mlmodels', views.MLModelViewSet)
 router.register(r'mlmodelconfigs', views.MLModelConfigViewSet)
 router.register(r'mlresults', views.MLResultViewSet)
+router.register(r'mljobs', views.MLJobViewSet)
 router.register(r'mlresultscores', views.MLResultScoreViewSet)
 router.register(r'mlscore', views.MLScoreViewSet)
 router.register(r'users', views.UserViewSet)

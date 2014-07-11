@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 # Local imports
+from .models import MLJob
 from .models import MLModel
 from .models import MLScore
 from .models import MLResult
@@ -96,3 +97,15 @@ class MLScoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MLScore
         fields = ('id', 'name')
+
+
+class MLJobSerializer(serializers.HyperlinkedModelSerializer):
+    mlmodel_config = serializers.HyperlinkedRelatedField(
+        view_name='mlmodelconfig-detail')
+    mlclassification_testset = serializers.HyperlinkedRelatedField(
+        view_name='mlclassificationtestset-detail')
+
+    class Meta:
+        model = MLJob
+        fields = ('id', 'created', 'mlmodel_config',
+            'mlclassification_testset')

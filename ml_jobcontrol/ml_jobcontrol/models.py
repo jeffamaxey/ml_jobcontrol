@@ -57,3 +57,8 @@ class MLResultScore(models.Model):
     mlresult = models.ForeignKey(MLResult)
     mlscore = models.ForeignKey(MLScore)    
     score = models.FloatField()
+
+
+class MLJob(TimeStampedModel):
+    mlmodel_config = models.ForeignKey(MLModelConfig)
+    mlclassification_testset = models.ForeignKey(MLClassificationTestSet)
