@@ -1,20 +1,16 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
-from __future__ import absolute_import
 import json
 import logging
 from pprint import pprint
 from pprint import pformat
-from datetime import datetime, timedelta
 
 # Imports from core django
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.test.client import RequestFactory
 
 # Imports from third party apps
 from rest_framework import status
-from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import force_authenticate
@@ -28,6 +24,7 @@ from .models import MLClassificationTestSet
 from .views import MLScoreViewSet
 
 logger = logging.getLogger(__name__)
+
 
 class RestApiBaseTests(APITestCase):
     def setUp(self):
@@ -142,7 +139,6 @@ class RestApiUseCaseTests(APITestCase):
             kwargs={"pk": self.mltestset.pk})
         mlscore_urls = [reverse("mlscore-detail",
             kwargs={"pk": mlscore.pk}) for mlscore in self.mlscores]
-        pprint(mlscore_urls)
         data = {
             "mlmodel_config": mlconfig_url,
             "mlclassification_testset": mltestset_url,

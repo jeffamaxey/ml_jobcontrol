@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
-from __future__ import absolute_import
 import logging
 
 # Imports from core django

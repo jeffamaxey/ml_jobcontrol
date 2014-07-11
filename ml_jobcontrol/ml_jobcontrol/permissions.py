@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
-from __future__ import absolute_import
 import logging
 
 # Imports from core django
@@ -9,8 +8,8 @@ import logging
 from rest_framework import permissions
 
 # Local imports
-
 logger = logging.getLogger(__name__)
+
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """

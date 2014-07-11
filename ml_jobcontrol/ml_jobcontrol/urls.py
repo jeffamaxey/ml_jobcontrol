@@ -1,17 +1,15 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
-from __future__ import absolute_import
 import logging
 
 # Imports from core django
-from django.conf.urls import patterns, include, url
-from django.conf.urls.static import static
 from django.conf import settings
+from django.conf.urls.static import static
+from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 
 # Imports from third party apps
 from rest_framework.routers import DefaultRouter
-from rest_framework.urlpatterns import format_suffix_patterns
 
 # Local imports
 from . import views
