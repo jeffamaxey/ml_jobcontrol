@@ -37,6 +37,8 @@ from .serializers import MLModelConfigSerializer
 from .serializers import MLResultScoreSerializer
 from .serializers import MLClassificationTestSetSerializer
 
+from .viewsets import BulkCreateViewSet
+
 logger = logging.getLogger(__name__)
 
 
@@ -102,7 +104,8 @@ class MLResultViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class MLResultScoreViewSet(viewsets.ModelViewSet):
+#class MLResultScoreViewSet(viewsets.ModelViewSet):
+class MLResultScoreViewSet(BulkCreateViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.

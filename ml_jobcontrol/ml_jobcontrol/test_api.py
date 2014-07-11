@@ -152,11 +152,13 @@ class RestApiUseCaseTests(APITestCase):
         new_mlresult_url = reverse("mlresult-detail",
             kwargs={"pk": response.data["id"]})
         mlresultscore_url = reverse("mlresultscore-list")
+        result_data = []
         for num, mlscore_url in enumerate(mlscore_urls):
             data = {
                 "mlresult": new_mlresult_url,
                 "mlscore": mlscore_url,
                 "score": 1.0 / float(num + 1),
             }
-            response = self.client.post(mlresultscore_url, data, format='json')
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+            result_data.append(data)
+        response = self.client.post(mlresultscore_url, result_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
