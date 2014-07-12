@@ -34,7 +34,7 @@ class MLDataSetSerializer(serializers.HyperlinkedModelSerializer):
 class MLDataSetJobSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MLDataSet
-        fields = ('id', 'name', 'url')
+        fields = ('url', 'name', 'url')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -61,7 +61,7 @@ class MLClassificationTestSetJobSerializer(serializers.HyperlinkedModelSerialize
 
     class Meta:
         model = MLClassificationTestSet
-        fields = ('id', 'train_num', 'test_num', 'mldataset')
+        fields = ('url', 'train_num', 'test_num', 'mldataset')
 
 
 class MLModelSerializer(serializers.HyperlinkedModelSerializer):
@@ -92,7 +92,7 @@ class MLModelConfigJobSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MLModelConfig
-        fields = ('json_config', 'mlmodel')
+        fields = ('url', 'json_config', 'mlmodel')
 
 
 class MLResultScoreSerializer(serializers.HyperlinkedModelSerializer):
@@ -127,9 +127,21 @@ class MLScoreSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name')
 
 
-class MLJobSerializer(serializers.HyperlinkedModelSerializer):
+class MLJobReadSerializer(serializers.HyperlinkedModelSerializer):
     mlmodel_config = MLModelConfigJobSerializer()
     mlclassification_testset = MLClassificationTestSetJobSerializer()
+
+    class Meta:
+        model = MLJob
+        fields = ('url', 'created', 'mlmodel_config',
+            'mlclassification_testset')
+
+
+class MLJobWriteSerializer(serializers.HyperlinkedModelSerializer):
+    mlmodel_config = serializers.HyperlinkedRelatedField(
+        view_name='mlmodelconfig-detail')
+    mlclassification_testset = serializers.HyperlinkedRelatedField(
+        view_name='mlclassificationtestset-detail')
 
     class Meta:
         model = MLJob

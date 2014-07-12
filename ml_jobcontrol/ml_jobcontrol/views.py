@@ -22,11 +22,12 @@ from .models import MLResultScore
 from .models import MLClassificationTestSet
 
 from .serializers import UserSerializer
-from .serializers import MLJobSerializer
 from .serializers import MLModelSerializer
 from .serializers import MLScoreSerializer
 from .serializers import MLResultSerializer
 from .serializers import MLDataSetSerializer
+from .serializers import MLJobReadSerializer
+from .serializers import MLJobWriteSerializer
 from .serializers import MLModelConfigSerializer
 from .serializers import MLResultScoreSerializer
 from .serializers import MLClassificationTestSetSerializer
@@ -119,13 +120,22 @@ class MLScoreViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class MLJobViewSet(viewsets.ReadOnlyModelViewSet):
+class MLJobReadViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
     """
     queryset = MLJob.objects.all()
-    serializer_class = MLJobSerializer
+    serializer_class = MLJobReadSerializer
+
+
+class MLJobWriteViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = MLJob.objects.all()
+    serializer_class = MLJobWriteSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
