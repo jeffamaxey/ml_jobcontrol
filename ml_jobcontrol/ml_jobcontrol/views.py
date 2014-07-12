@@ -119,7 +119,7 @@ class MLScoreViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class MLJobViewSet(viewsets.ModelViewSet):
+class MLJobViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.

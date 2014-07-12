@@ -31,13 +31,14 @@ router.register(r'mljobs', views.MLJobViewSet)
 router.register(r'mlresultscores', views.MLResultScoreViewSet)
 router.register(r'mlscore', views.MLScoreViewSet)
 router.register(r'users', views.UserViewSet)
+API_PREFIX = "api/v1"
 
 urlpatterns = patterns('',
     #url(r'^$', TemplateView.as_view(template_name='base.html')),
 
     # Examples:
     # url(r'^$', 'ml_jobcontrol.views.home', name='home'),
-    url(r'^api/v1/', include(router.urls)),
+    url(r'^%s/' % API_PREFIX, include(router.urls)),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -58,6 +59,6 @@ if settings.DEBUG:
 
 # DRF authentication
 urlpatterns += patterns('',
-    url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework')),
+    url(r'^%s/api-auth/' % API_PREFIX, include('rest_framework.urls',
+                                     namespace='rest_framework')),
 )
