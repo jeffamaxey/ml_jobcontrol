@@ -48,7 +48,7 @@ class MLScore(TimeStampedModel):
     name = models.CharField(max_length=100)
 
 
-class MLJob(StatusModel):
+class MLJob(StatusModel, TimeStampedModel):
     STATUS = Choices('todo', 'in_progress', 'done')
     mlmodel_config = models.ForeignKey(MLModelConfig)
     mlclassification_testset = models.ForeignKey(MLClassificationTestSet)
