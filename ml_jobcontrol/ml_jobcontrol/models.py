@@ -46,10 +46,14 @@ class MLScore(TimeStampedModel):
     name = models.CharField(max_length=100)
 
 
-class MLResult(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+class MLJob(TimeStampedModel):
     mlmodel_config = models.ForeignKey(MLModelConfig)
     mlclassification_testset = models.ForeignKey(MLClassificationTestSet)
+
+
+class MLResult(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    mljob = models.ForeignKey(MLJob)
     scores = models.ManyToManyField(MLScore, through='MLResultScore')
 
 
@@ -57,8 +61,3 @@ class MLResultScore(models.Model):
     mlresult = models.ForeignKey(MLResult)
     mlscore = models.ForeignKey(MLScore)    
     score = models.FloatField()
-
-
-class MLJob(TimeStampedModel):
-    mlmodel_config = models.ForeignKey(MLModelConfig)
-    mlclassification_testset = models.ForeignKey(MLClassificationTestSet)
