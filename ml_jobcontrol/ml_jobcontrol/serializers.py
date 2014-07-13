@@ -107,18 +107,15 @@ class MLResultScoreSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MLResultSerializer(serializers.HyperlinkedModelSerializer):
-    mlmodel_config = serializers.HyperlinkedRelatedField(
-        view_name='mlmodelconfig-detail')
-    mlclassification_testset = serializers.HyperlinkedRelatedField(
-        view_name='mlclassificationtestset-detail')
+    mljob = serializers.HyperlinkedRelatedField(
+        view_name='mljob-detail')
     # does not work without read_only=True
     scores = serializers.HyperlinkedRelatedField(many=True,
         view_name='mlresultscore-detail', read_only=True)
 
     class Meta:
         model = MLResult
-        fields = ('id', 'created', 'mlmodel_config',
-            'mlclassification_testset', 'scores')
+        fields = ('id', 'created', 'mljob', 'scores')
 
 
 class MLScoreSerializer(serializers.HyperlinkedModelSerializer):
