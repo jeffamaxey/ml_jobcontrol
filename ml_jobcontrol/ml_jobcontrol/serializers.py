@@ -96,14 +96,14 @@ class MLModelConfigJobSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MLResultScoreSerializer(serializers.HyperlinkedModelSerializer):
-    mlresult = serializers.HyperlinkedRelatedField(
-        view_name='mlresult-detail')
+    mljob = serializers.HyperlinkedRelatedField(
+        view_name='mljob-detail')
     mlscore = serializers.HyperlinkedRelatedField(
         view_name='mlscore-detail')
 
     class Meta:
         model = MLResultScore
-        fields = ('id', 'mlresult', 'mlscore', "score")
+        fields = ('id', 'mljob', 'mlscore', "score")
 
 
 class MLScoreSerializer(serializers.HyperlinkedModelSerializer):
