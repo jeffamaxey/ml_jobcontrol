@@ -15,19 +15,16 @@ from .permissions import IsOwnerOrReadOnly
 from .models import MLJob
 from .models import MLModel
 from .models import MLScore
-from .models import MLResult
 from .models import MLDataSet
 from .models import MLModelConfig
 from .models import MLResultScore
 from .models import MLClassificationTestSet
 
 from .serializers import UserSerializer
+from .serializers import MLJobSerializer
 from .serializers import MLModelSerializer
 from .serializers import MLScoreSerializer
-from .serializers import MLResultSerializer
 from .serializers import MLDataSetSerializer
-from .serializers import MLJobReadSerializer
-from .serializers import MLJobWriteSerializer
 from .serializers import MLModelConfigSerializer
 from .serializers import MLResultScoreSerializer
 from .serializers import MLClassificationTestSetSerializer
@@ -89,16 +86,6 @@ class MLModelConfigViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class MLResultViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
-    queryset = MLResult.objects.all()
-    serializer_class = MLResultSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-
 #class MLResultScoreViewSet(viewsets.ModelViewSet):
 class MLResultScoreViewSet(BulkCreateViewSet):
     """
@@ -120,23 +107,13 @@ class MLScoreViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class MLJobReadViewSet(viewsets.ReadOnlyModelViewSet):
+class MLJobViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
     """
     queryset = MLJob.objects.all()
-    serializer_class = MLJobReadSerializer
-
-
-class MLJobWriteViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
-    queryset = MLJob.objects.all()
-    serializer_class = MLJobWriteSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = MLJobSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

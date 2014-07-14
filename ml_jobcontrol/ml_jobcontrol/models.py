@@ -55,6 +55,6 @@ class MLJob(StatusModel, TimeStampedModel):
 
 
 class MLResultScore(models.Model):
-    mljob = models.ForeignKey(MLJob)
+    mljob = models.ForeignKey(MLJob, related_name='scores')
     mlscore = models.ForeignKey(MLScore)    
     score = models.FloatField()

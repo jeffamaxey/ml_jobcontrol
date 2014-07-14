@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
 import logging
+from pprint import pformat
 
 # Imports from core django
 from django.contrib.auth.models import User
@@ -12,7 +13,6 @@ from rest_framework import serializers
 from .models import MLJob
 from .models import MLModel
 from .models import MLScore
-from .models import MLResult
 from .models import MLDataSet
 from .models import MLModelConfig
 from .models import MLResultScore
@@ -106,41 +106,26 @@ class MLResultScoreSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'mlresult', 'mlscore', "score")
 
 
-class MLResultSerializer(serializers.HyperlinkedModelSerializer):
-    mljob = serializers.HyperlinkedRelatedField(
-        view_name='mljob-detail')
-    # does not work without read_only=True
-    scores = serializers.HyperlinkedRelatedField(many=True,
-        view_name='mlresultscore-detail', read_only=True)
-
-    class Meta:
-        model = MLResult
-        fields = ('id', 'created', 'mljob', 'scores')
-
-
 class MLScoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MLScore
         fields = ('id', 'name')
 
 
-class MLJobReadSerializer(serializers.HyperlinkedModelSerializer):
-    mlmodel_config = MLModelConfigJobSerializer()
-    mlclassification_testset = MLClassificationTestSetJobSerializer()
-
-    class Meta:
-        model = MLJob
-        fields = ('url', 'created', 'mlmodel_config',
-            'mlclassification_testset')
-
-
-class MLJobWriteSerializer(serializers.HyperlinkedModelSerializer):
+class MLJobSerializer(serializers.HyperlinkedModelSerializer):
     mlmodel_config = serializers.HyperlinkedRelatedField(
         view_name='mlmodelconfig-detail')
     mlclassification_testset = serializers.HyperlinkedRelatedField(
         view_name='mlclassificationtestset-detail')
+    model_config = MLModelConfigJobSerializer(source='mlmodel_config',
+        required=False, read_only=True)
+    classification_testset = MLClassificationTestSetJobSerializer(
+        source='mlclassification_testset', read_only=True)
+    scores = serializers.HyperlinkedRelatedField(many=True,
+        view_name='mlresultscore-detail', read_only=True)
 
     class Meta:
         model = MLJob
-        fields = ('id', 'created', 'mlmodel_config',
+        fields = ('url', 'created', 'scores', 'model_config',
+            'classification_testset', 'mlmodel_config',
             'mlclassification_testset')
