@@ -149,7 +149,7 @@ class RestApiUseCaseTests(APITestCase):
         payload["mlmodel_config"] =  my_job["mlmodel_config"]
         payload["mlclassification_testset"] = \
             my_job["mlclassification_testset"]
-        response = self.client.put(my_job["url"], payload, format="json")
+        response = self.client.patch(my_job["url"], payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], "in_progress")
 
@@ -169,6 +169,6 @@ class RestApiUseCaseTests(APITestCase):
 
         # change jobs status from "in_progress" to "done"
         payload["status"] = "done"
-        response = self.client.put(my_job["url"], payload, format="json")
+        response = self.client.patch(my_job["url"], payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], "done")
