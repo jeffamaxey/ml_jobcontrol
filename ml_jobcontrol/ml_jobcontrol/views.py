@@ -36,10 +36,6 @@ logger = logging.getLogger(__name__)
 
 
 class MLDataSetViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -50,10 +46,6 @@ class MLDataSetViewSet(viewsets.ModelViewSet):
 
 
 class MLClassificationTestSetViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLClassificationTestSet.objects.all()
     serializer_class = MLClassificationTestSetSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -64,10 +56,6 @@ class MLClassificationTestSetViewSet(viewsets.ModelViewSet):
 
 
 class MLModelViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLModel.objects.all()
     serializer_class = MLModelSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -78,10 +66,6 @@ class MLModelViewSet(viewsets.ModelViewSet):
 
 
 class MLModelConfigViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLModelConfig.objects.all()
     serializer_class = MLModelConfigSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
@@ -89,30 +73,18 @@ class MLModelConfigViewSet(viewsets.ModelViewSet):
 
 #class MLResultScoreViewSet(viewsets.ModelViewSet):
 class MLResultScoreViewSet(BulkCreateViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLResultScore.objects.all()
     serializer_class = MLResultScoreSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class MLScoreViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLScore.objects.all()
     serializer_class = MLScoreSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class MLJobViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLJob.objects.all()
     serializer_class = MLJobSerializer
 
@@ -124,8 +96,5 @@ class MLJobViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
