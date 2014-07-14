@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
 import logging
+from pprint import pformat
 
 # Imports from core django
 from django.contrib.auth.models import User
@@ -114,6 +115,12 @@ class MLJobViewSet(viewsets.ModelViewSet):
     """
     queryset = MLJob.objects.all()
     serializer_class = MLJobSerializer
+
+    def get_queryset(self):
+        filtered_status = self.request.QUERY_PARAMS.get("status")
+        if filtered_status is not None:
+            return self.queryset.filter(status=filtered_status)
+        return self.queryset
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
