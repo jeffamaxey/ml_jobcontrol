@@ -126,6 +126,6 @@ class MLJobSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MLJob
-        fields = ('url', 'created', 'scores', 'model_config',
+        fields = ('url', 'created', 'status', 'scores', 'model_config',
             'classification_testset', 'mlmodel_config',
             'mlclassification_testset')
