@@ -56,6 +56,7 @@ INSTALLED_APPS += (
 
 MIDDLEWARE_CLASSES += (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'ml_jobcontrol.middleware.DisableCSRF',
 )
 
 DEBUG_TOOLBAR_PATCH_SETTINGS = False

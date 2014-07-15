@@ -96,6 +96,8 @@ class StatusConflictException(APIException):
 class MLJobViewSet(viewsets.ModelViewSet):
     queryset = MLJob.objects.all()
     serializer_class = MLJobSerializer
+    #permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     allowed_status_updates = {
         "todo": set(["in_progress", "done"]),
         "in_progress": set(["done"]),
