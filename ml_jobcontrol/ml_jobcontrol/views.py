@@ -1,14 +1,16 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
 import logging
-from pprint import pformat
+from pprint import pformat, pprint
 
 # Imports from core django
 from django.contrib.auth.models import User
 
 # Imports from third party apps
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import permissions
+from rest_framework.exceptions import APIException
 
 # Local imports
 from .permissions import IsOwnerOrReadOnly
@@ -84,15 +86,39 @@ class MLScoreViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
+class StatusConflictException(APIException):
+    status_code = 409
+
+    def __init__(self, detail):
+        self.detail = detail
+
+
 class MLJobViewSet(viewsets.ModelViewSet):
     queryset = MLJob.objects.all()
     serializer_class = MLJobSerializer
+    allowed_status_updates = {
+        "todo": set(["in_progress", "done"]),
+        "in_progress": set(["done"]),
+        "done": set(),
+    }
 
     def get_queryset(self):
         filtered_status = self.request.QUERY_PARAMS.get("status")
         if filtered_status is not None:
             return self.queryset.filter(status=filtered_status)
         return self.queryset
+
+    def pre_save(self, obj):
+        old_obj = self.get_object_or_none()
+        if old_obj is not None:
+            # old_obj does exist -> update status case
+            # updates of config or testset are not permitted
+            # delete old job and create new one
+            if obj.status not in self.allowed_status_updates.get(
+                old_obj.status, set()):
+                raise StatusConflictException(
+                    "can't change status from %s to %s" % (
+                        old_obj.status, obj.status))
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

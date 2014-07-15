@@ -172,3 +172,30 @@ class RestApiUseCaseTests(APITestCase):
         response = self.client.patch(my_job["url"], payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], "done")
+
+    def test_cant_get_already_running_job(self):
+        """
+        Try to get job from rest api, but get error because it is already
+        in progress
+        """
+        self.client.force_authenticate(user=self.user)
+
+        # get first job in status "todo"
+        mljobs_url = reverse("mljob-list")
+        payload = {"status": "todo"}
+        response = self.client.get(mljobs_url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        my_job = response.data[0]
+
+        # set job status to "in_progress"
+        self.mljob.status = "in_progress"
+        self.mljob.save()
+
+        # trying to change jobs status from "todo" to "in_progress"
+        # should raise an conflict exception
+        payload = {"status": "in_progress"}
+        payload["mlmodel_config"] =  my_job["mlmodel_config"]
+        payload["mlclassification_testset"] = \
+            my_job["mlclassification_testset"]
+        response = self.client.patch(my_job["url"], payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
