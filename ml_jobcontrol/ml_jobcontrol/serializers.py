@@ -109,7 +109,7 @@ class MLResultScoreSerializer(serializers.HyperlinkedModelSerializer):
 class MLScoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MLScore
-        fields = ('id', 'name')
+        fields = ('url', 'name')
 
 
 class MLJobSerializer(serializers.HyperlinkedModelSerializer):
