@@ -31,12 +31,6 @@ class MLDataSetSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name', 'data_url', 'owner')
 
 
-class MLDataSetJobSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = MLDataSet
-        fields = ('url', 'name', 'url')
-
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     mldatasets = serializers.HyperlinkedRelatedField(many=True,
         view_name='mldataset-detail')
@@ -57,7 +51,7 @@ class MLClassificationTestSetSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MLClassificationTestSetJobSerializer(serializers.HyperlinkedModelSerializer):
-    mldataset = MLDataSetJobSerializer()
+    mldataset = MLDataSetSerializer()
 
     class Meta:
         model = MLClassificationTestSet
