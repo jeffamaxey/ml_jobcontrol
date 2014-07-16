@@ -45,7 +45,7 @@ class MLModelConfig(models.Model):
 
 
 class MLScore(TimeStampedModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
 
 class MLJob(StatusModel, TimeStampedModel):
