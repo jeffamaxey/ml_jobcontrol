@@ -28,7 +28,7 @@ class MLDataSetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MLDataSet
-        fields = ('id', 'name', 'url', 'owner')
+        fields = ('url', 'name', 'data_url', 'owner')
 
 
 class MLDataSetJobSerializer(serializers.HyperlinkedModelSerializer):
