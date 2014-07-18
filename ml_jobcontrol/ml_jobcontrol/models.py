@@ -7,6 +7,8 @@ from django.db import models
 
 # Imports from third party apps
 
+from model_utils import Choices
+from model_utils.models import StatusModel
 from model_utils.models import TimeStampedModel
 
 # Local imports
@@ -15,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 class MLDataSet(TimeStampedModel):
-    name = models.CharField(max_length=100)
-    url = models.URLField(unique=True)
+    name = models.CharField(max_length=100, unique=True)
+    data_url = models.URLField(unique=True)
     owner = models.ForeignKey('auth.User', related_name='mldatasets',
         null=True, default=None)
 
@@ -43,17 +45,16 @@ class MLModelConfig(models.Model):
 
 
 class MLScore(TimeStampedModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
 
-class MLResult(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+class MLJob(StatusModel, TimeStampedModel):
+    STATUS = Choices('todo', 'in_progress', 'done')
     mlmodel_config = models.ForeignKey(MLModelConfig)
     mlclassification_testset = models.ForeignKey(MLClassificationTestSet)
-    scores = models.ManyToManyField(MLScore, through='MLResultScore')
 
 
 class MLResultScore(models.Model):
-    mlresult = models.ForeignKey(MLResult)
+    mljob = models.ForeignKey(MLJob, related_name='scores')
     mlscore = models.ForeignKey(MLScore)    
     score = models.FloatField()

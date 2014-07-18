@@ -1,29 +1,32 @@
 # -*- encoding: utf-8 -*-
 # Standard library imports
 import logging
+from pprint import pformat, pprint
 
 # Imports from core django
 from django.contrib.auth.models import User
 
 # Imports from third party apps
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import permissions
+from rest_framework.exceptions import APIException
 
 # Local imports
 from .permissions import IsOwnerOrReadOnly
 
+from .models import MLJob
 from .models import MLModel
 from .models import MLScore
-from .models import MLResult
 from .models import MLDataSet
 from .models import MLModelConfig
 from .models import MLResultScore
 from .models import MLClassificationTestSet
 
 from .serializers import UserSerializer
+from .serializers import MLJobSerializer
 from .serializers import MLModelSerializer
 from .serializers import MLScoreSerializer
-from .serializers import MLResultSerializer
 from .serializers import MLDataSetSerializer
 from .serializers import MLModelConfigSerializer
 from .serializers import MLResultScoreSerializer
@@ -35,10 +38,6 @@ logger = logging.getLogger(__name__)
 
 
 class MLDataSetViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLDataSet.objects.all()
     serializer_class = MLDataSetSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -49,10 +48,6 @@ class MLDataSetViewSet(viewsets.ModelViewSet):
 
 
 class MLClassificationTestSetViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLClassificationTestSet.objects.all()
     serializer_class = MLClassificationTestSetSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -63,10 +58,6 @@ class MLClassificationTestSetViewSet(viewsets.ModelViewSet):
 
 
 class MLModelViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLModel.objects.all()
     serializer_class = MLModelSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -77,49 +68,65 @@ class MLModelViewSet(viewsets.ModelViewSet):
 
 
 class MLModelConfigViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLModelConfig.objects.all()
     serializer_class = MLModelConfigSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class MLResultViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
-    queryset = MLResult.objects.all()
-    serializer_class = MLResultSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-
 #class MLResultScoreViewSet(viewsets.ModelViewSet):
 class MLResultScoreViewSet(BulkCreateViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLResultScore.objects.all()
     serializer_class = MLResultScoreSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class MLScoreViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-    """
     queryset = MLScore.objects.all()
     serializer_class = MLScoreSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
+class StatusConflictException(APIException):
+    status_code = 409
+
+    def __init__(self, detail):
+        self.detail = detail
+
+
+class MLJobViewSet(viewsets.ModelViewSet):
+    queryset = MLJob.objects.all()
+    serializer_class = MLJobSerializer
+    #permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
+    allowed_status_updates = {
+        "todo": set(["in_progress", "done"]),
+        "in_progress": set(["done"]),
+        "done": set(),
+    }
+
+    def get_queryset(self):
+        filtered_status = self.request.QUERY_PARAMS.get("status")
+        if filtered_status is not None:
+            return self.queryset.filter(status=filtered_status)
+        return self.queryset
+
+    def pre_save(self, obj):
+        old_obj = None
+        try:
+            old_obj = self.get_object_or_none()
+        except Exception:
+            pass
+        if old_obj is not None:
+            # old_obj does exist -> update status case
+            # updates of config or testset are not permitted
+            # delete old job and create new one
+            if obj.status not in self.allowed_status_updates.get(
+                old_obj.status, set()):
+                raise StatusConflictException(
+                    "can't change status from %s to %s" % (
+                        old_obj.status, obj.status))
+
+
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
