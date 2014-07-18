@@ -111,7 +111,11 @@ class MLJobViewSet(viewsets.ModelViewSet):
         return self.queryset
 
     def pre_save(self, obj):
-        old_obj = self.get_object_or_none()
+        old_obj = None
+        try:
+            old_obj = self.get_object_or_none()
+        except Exception:
+            pass
         if old_obj is not None:
             # old_obj does exist -> update status case
             # updates of config or testset are not permitted

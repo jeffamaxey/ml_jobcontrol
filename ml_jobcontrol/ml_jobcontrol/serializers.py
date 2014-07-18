@@ -63,7 +63,7 @@ class MLModelSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MLModel
-        fields = ('id', 'name', 'import_path', 'mlmodelconfigs', 'owner')
+        fields = ('url', 'name', 'import_path', 'mlmodelconfigs', 'owner')
 
 
 class MLModelJobSerializer(serializers.HyperlinkedModelSerializer):
@@ -78,7 +78,7 @@ class MLModelConfigSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MLModelConfig
-        fields = ('id', 'created', 'json_config', 'mlmodel')
+        fields = ('url', 'created', 'json_config', 'mlmodel')
 
 
 class MLModelConfigJobSerializer(serializers.HyperlinkedModelSerializer):
