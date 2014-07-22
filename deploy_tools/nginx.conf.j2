@@ -1,7 +1,11 @@
 server {
     listen 80;
     server_name {{ host }};
-
+ 
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/server.crt;
+    ssl_certificate_key /etc/nginx/ssl/server.key;
+ 
     location /static {
         alias /home/jochen/sites/{{ host }}/source/ml_jobcontrol/assets;
     }
