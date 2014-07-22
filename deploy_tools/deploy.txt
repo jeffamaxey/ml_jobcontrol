@@ -1,0 +1,2 @@
+fab deploy:host=jochen@new.wersdoerfer.de
+ansible-playbook -vvv -i inventory.ansible  provision.ansible.yaml -K

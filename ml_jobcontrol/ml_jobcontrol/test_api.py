@@ -16,6 +16,7 @@ from rest_framework.test import APIRequestFactory
 from rest_framework.test import force_authenticate
 
 # Local imports
+from .models import MLJob
 from .models import MLModel
 from .models import MLScore
 from .models import MLDataSet
@@ -125,36 +126,76 @@ class RestApiUseCaseTests(APITestCase):
             MLClassificationTestSet.objects.get_or_create(
                 mldataset=mldataset, train_num=1000, test_num=300,
                 owner=self.user)
+        self.mljob, created = MLJob.objects.get_or_create(
+            mlmodel_config=self.mlconfig,
+            mlclassification_testset=self.mltestset,
+            status="todo")
 
     def test_submit_result(self):
         """
-        Submit complete precision/recall test result for known
-        model config + classification testset.
+        Get job from rest api + submit result.
         """
-        mlresult_url = reverse("mlresult-list")
         self.client.force_authenticate(user=self.user)
-        mlconfig_url = reverse("mlmodelconfig-detail",
-            kwargs={"pk": self.mlconfig.pk})
-        mltestset_url = reverse("mlclassificationtestset-detail",
-            kwargs={"pk": self.mltestset.pk})
+
+        # get first job in status "todo"
+        mljobs_url = reverse("mljob-list")
+        payload = {"status": "todo"}
+        response = self.client.get(mljobs_url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        my_job = response.data[0]
+
+        # change jobs status from "todo" to "in_progress"
+        payload = {"status": "in_progress"}
+        payload["mlmodel_config"] =  my_job["mlmodel_config"]
+        payload["mlclassification_testset"] = \
+            my_job["mlclassification_testset"]
+        response = self.client.patch(my_job["url"], payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["status"], "in_progress")
+
+        # post results to result scores
+        mlresultscore_url = reverse("mlresultscore-list")
         mlscore_urls = [reverse("mlscore-detail",
             kwargs={"pk": mlscore.pk}) for mlscore in self.mlscores]
-        data = {
-            "mlmodel_config": mlconfig_url,
-            "mlclassification_testset": mltestset_url,
-        }
-        response = self.client.post(mlresult_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        new_mlresult_url = reverse("mlresult-detail",
-            kwargs={"pk": response.data["id"]})
-        mlresultscore_url = reverse("mlresultscore-list")
-        result_data = []
+        data = []
         for num, mlscore_url in enumerate(mlscore_urls):
-            data = {
-                "mlresult": new_mlresult_url,
+            data.append({
+                "mljob": my_job["url"],
                 "mlscore": mlscore_url,
                 "score": 1.0 / float(num + 1),
-            }
-            result_data.append(data)
-        response = self.client.post(mlresultscore_url, result_data, format='json')
+            })
+        response = self.client.post(mlresultscore_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # change jobs status from "in_progress" to "done"
+        payload["status"] = "done"
+        response = self.client.patch(my_job["url"], payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["status"], "done")
+
+    def test_cant_get_already_running_job(self):
+        """
+        Try to get job from rest api, but get error because it is already
+        in progress
+        """
+        self.client.force_authenticate(user=self.user)
+
+        # get first job in status "todo"
+        mljobs_url = reverse("mljob-list")
+        payload = {"status": "todo"}
+        response = self.client.get(mljobs_url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        my_job = response.data[0]
+
+        # set job status to "in_progress"
+        self.mljob.status = "in_progress"
+        self.mljob.save()
+
+        # trying to change jobs status from "todo" to "in_progress"
+        # should raise an conflict exception
+        payload = {"status": "in_progress"}
+        payload["mlmodel_config"] =  my_job["mlmodel_config"]
+        payload["mlclassification_testset"] = \
+            my_job["mlclassification_testset"]
+        response = self.client.patch(my_job["url"], payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)

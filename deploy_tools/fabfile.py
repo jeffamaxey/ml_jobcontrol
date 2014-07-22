@@ -1,8 +1,12 @@
+import os
+from pprint import pprint, pformat
 from fabric.contrib.files import append, exists, sed
+from fabric.context_managers import shell_env
 from fabric.api import env, local, run
 import random
 
 REPO_URL = 'https://github.com/ephes/ml_jobcontrol.git'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 def _create_directory_structure_if_necessary(site_folder):
     for subfolder in ('database', 'static', 'virtualenv', 'source'):
@@ -12,7 +16,7 @@ def _get_latest_source(source_folder):
     if exists(source_folder + '/.git'):
         run('cd %s && git fetch' % (source_folder,))
     else:
-        run('git clone %s %s' % (REPO_URL, source_folder))
+        run('git clone -b develop %s %s' % (REPO_URL, source_folder))
     current_commit = local("git log -n 1 --format=%H", capture=True)
     run('cd %s && git reset --hard %s' % (source_folder, current_commit))
 
@@ -33,14 +37,19 @@ def _update_virtualenv(source_folder):
     ))
 
 def _update_static_files(source_folder):
-    run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py collectstatic --noinput' % ( # 1
-        source_folder,
-    ))
+    with shell_env(SECRET_KEY=SECRET_KEY):
+        run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py collectstatic --settings=ml_jobcontrol.settings.production --noinput' % ( # 1
+            source_folder,
+        ))
 
 def _update_database(source_folder):
-    run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py migrate --noinput' % (
-        source_folder,
-    ))
+    with shell_env(SECRET_KEY=SECRET_KEY):
+        run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py syncdb --settings=ml_jobcontrol.settings.production --noinput' % (
+            source_folder,
+        ))
+        run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py migrate --settings=ml_jobcontrol.settings.production --noinput' % (
+            source_folder,
+        ))
 
 def deploy():
     site_folder = '/home/%s/sites/%s' % (env.user, env.host)
