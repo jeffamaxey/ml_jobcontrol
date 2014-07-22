@@ -38,7 +38,7 @@ def _update_static_files(source_folder):
     ))
 
 def _update_database(source_folder):
-    run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py migrate --noinput' % (
+    run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py migrate --noinput --settings=ml_jobcontrol.settings.production' % (
         source_folder,
     ))
 
