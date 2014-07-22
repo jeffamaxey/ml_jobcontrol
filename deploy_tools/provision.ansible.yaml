@@ -7,7 +7,7 @@
 
   tasks:
     - name: make sure required packages are installed
-      apt: pkg=nginx,git,python,python-pip state=present
+      apt: pkg=nginx,git,python,python-pip,postgresql state=present
     - name: make sure virtualenv is installed
       shell: pip install virtualenv
 
