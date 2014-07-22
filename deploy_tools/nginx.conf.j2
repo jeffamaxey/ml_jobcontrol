@@ -1,15 +1,6 @@
 server {
     server_name {{ host }};
-
-    location /static {
-        alias /home/jochen/sites/{{ host }}/source/ml_jobcontrol/assets;
-    }
-
-    location / {
-        proxy_set_header Host $host;
-        proxy_pass http://unix:/tmp/{{ host }}.socket;
-        proxy_set_header X-Forwarded-Protocol $scheme;
-    }
+    rewrite     ^   https://$server_name$request_uri? permanent;
 }
 
 server {
