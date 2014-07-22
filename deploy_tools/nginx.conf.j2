@@ -1,11 +1,6 @@
 server {
-    listen 80;
     server_name {{ host }};
- 
-    ssl on;
-    ssl_certificate /etc/nginx/ssl/server.crt;
-    ssl_certificate_key /etc/nginx/ssl/server.key;
- 
+
     location /static {
         alias /home/jochen/sites/{{ host }}/source/ml_jobcontrol/assets;
     }
@@ -13,5 +8,31 @@ server {
     location / {
         proxy_set_header Host $host;
         proxy_pass http://unix:/tmp/{{ host }}.socket;
+        proxy_set_header X-Forwarded-Protocol $scheme;
+    }
+}
+
+server {
+    listen 443;
+    server_name {{ host }};
+
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/server.crt;
+    ssl_certificate_key /etc/nginx/ssl/server.key;
+
+    ssl_session_timeout 5m;
+
+    ssl_protocols SSLv3 TLSv1;
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
+    ssl_prefer_server_ciphers on;
+
+    location /static {
+        alias /home/jochen/sites/{{ host }}/source/ml_jobcontrol/assets;
+    }
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_pass http://unix:/tmp/{{ host }}.socket;
+        proxy_set_header X-Forwarded-Protocol $scheme;
     }
 }
