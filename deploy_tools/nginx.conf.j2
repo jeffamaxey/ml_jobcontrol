@@ -3,7 +3,7 @@ server {
     server_name {{ host }};
 
     location /static {
-        alias /home/jochen/sites/{{ host }}/static;
+        alias /home/jochen/sites/{{ host }}/source/ml_jobcontrol/assets;
     }
 
     location / {
