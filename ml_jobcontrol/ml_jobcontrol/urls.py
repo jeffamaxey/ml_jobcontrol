@@ -16,6 +16,8 @@ from . import views
 
 logger = logging.getLogger(__name__)
 
+logger.info("hello world")
+
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
 #admin.autodiscover()
