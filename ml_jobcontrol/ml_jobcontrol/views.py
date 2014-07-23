@@ -4,6 +4,7 @@ import logging
 from pprint import pformat, pprint
 
 # Imports from core django
+from django.views.generic import ListView
 from django.contrib.auth.models import User
 
 # Imports from third party apps
@@ -45,6 +46,11 @@ class MLDataSetViewSet(viewsets.ModelViewSet):
 
     def pre_save(self, obj):
         obj.owner = self.request.user
+
+
+class MLDataSetListView(ListView):
+    model = MLDataSet
+    template_name = "datasets/datasets_list.html"
 
 
 class MLClassificationTestSetViewSet(viewsets.ModelViewSet):

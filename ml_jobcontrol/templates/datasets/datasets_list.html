@@ -1,0 +1,10 @@
+{% extends "datasets/base_datasets.html" %}
+
+{% block content %}
+    <h2>Datasets</h2>
+    <ul>
+        {% for dataset in object_list %}
+            <li>{{ dataset.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}
