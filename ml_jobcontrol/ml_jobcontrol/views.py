@@ -116,15 +116,14 @@ class MLJobViewSet(viewsets.ModelViewSet):
             old_obj = self.get_object_or_none()
         except Exception:
             pass
-        if old_obj is not None:
-            # old_obj does exist -> update status case
-            # updates of config or testset are not permitted
-            # delete old job and create new one
-            if obj.status not in self.allowed_status_updates.get(
-                old_obj.status, set()):
-                raise StatusConflictException(
-                    "can't change status from %s to %s" % (
-                        old_obj.status, obj.status))
+        if (
+            old_obj is not None
+            and obj.status
+            not in self.allowed_status_updates.get(old_obj.status, set())
+        ):
+            raise StatusConflictException(
+                f"can't change status from {old_obj.status} to {obj.status}"
+            )
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

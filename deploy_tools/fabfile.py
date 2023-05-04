@@ -10,50 +10,47 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 
 def _create_directory_structure_if_necessary(site_folder):
     for subfolder in ('database', 'static', 'virtualenv', 'source'):
-        run('mkdir -p %s/%s' % (site_folder, subfolder))
+        run(f'mkdir -p {site_folder}/{subfolder}')
 
 def _get_latest_source(source_folder):
-    if exists(source_folder + '/.git'):
-        run('cd %s && git fetch' % (source_folder,))
+    if exists(f'{source_folder}/.git'):
+        run(f'cd {source_folder} && git fetch')
     else:
-        run('git clone -b develop %s %s' % (REPO_URL, source_folder))
+        run(f'git clone -b develop {REPO_URL} {source_folder}')
     current_commit = local("git log -n 1 --format=%H", capture=True)
-    run('cd %s && git reset --hard %s' % (source_folder, current_commit))
+    run(f'cd {source_folder} && git reset --hard {current_commit}')
 
 def _update_settings(source_folder, site_name):
-    settings_path = source_folder + '/ml_jobcontrol/ml_jobcontrol/settings/production.py'
-    sed(settings_path, "DEBUG = True", "DEBUG = False")
-    sed(settings_path,
-        'ALLOWED_HOSTS =.+$',
-        'ALLOWED_HOSTS = ["%s"]' % (site_name,)
+    settings_path = (
+        f'{source_folder}/ml_jobcontrol/ml_jobcontrol/settings/production.py'
     )
+    sed(settings_path, "DEBUG = True", "DEBUG = False")
+    sed(settings_path, 'ALLOWED_HOSTS =.+$', f'ALLOWED_HOSTS = ["{site_name}"]')
 
 def _update_virtualenv(source_folder):
-    virtualenv_folder = source_folder + '/../virtualenv'
-    if not exists(virtualenv_folder + '/bin/pip'):
-        run('virtualenv %s' % (virtualenv_folder,))
-    run('%s/bin/pip install -r %s/requirements.txt' % (
-            virtualenv_folder, source_folder
-    ))
+    virtualenv_folder = f'{source_folder}/../virtualenv'
+    if not exists(f'{virtualenv_folder}/bin/pip'):
+        run(f'virtualenv {virtualenv_folder}')
+    run(f'{virtualenv_folder}/bin/pip install -r {source_folder}/requirements.txt')
 
 def _update_static_files(source_folder):
     with shell_env(SECRET_KEY=SECRET_KEY):
-        run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py collectstatic --settings=ml_jobcontrol.settings.production --noinput' % ( # 1
-            source_folder,
-        ))
+        run(
+            f'cd {source_folder} && ../virtualenv/bin/python ml_jobcontrol/manage.py collectstatic --settings=ml_jobcontrol.settings.production --noinput'
+        )
 
 def _update_database(source_folder):
     with shell_env(SECRET_KEY=SECRET_KEY):
-        run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py syncdb --settings=ml_jobcontrol.settings.production --noinput' % (
-            source_folder,
-        ))
-        run('cd %s && ../virtualenv/bin/python ml_jobcontrol/manage.py migrate --settings=ml_jobcontrol.settings.production --noinput' % (
-            source_folder,
-        ))
+        run(
+            f'cd {source_folder} && ../virtualenv/bin/python ml_jobcontrol/manage.py syncdb --settings=ml_jobcontrol.settings.production --noinput'
+        )
+        run(
+            f'cd {source_folder} && ../virtualenv/bin/python ml_jobcontrol/manage.py migrate --settings=ml_jobcontrol.settings.production --noinput'
+        )
 
 def deploy():
-    site_folder = '/home/%s/sites/%s' % (env.user, env.host)
-    source_folder = site_folder + '/source'
+    site_folder = f'/home/{env.user}/sites/{env.host}'
+    source_folder = f'{site_folder}/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
     _update_settings(source_folder, env.host)

@@ -16,7 +16,7 @@ def get_env_setting(setting):
     try:
         return environ[setting]
     except KeyError:
-        error_msg = "Set the %s env variable" % setting
+        error_msg = f"Set the {setting} env variable"
         raise ImproperlyConfigured(error_msg)
 
 ########## HOST CONFIGURATION
@@ -41,7 +41,7 @@ EMAIL_HOST_USER = environ.get('EMAIL_HOST_USER', 'your_email@example.com')
 EMAIL_PORT = environ.get('EMAIL_PORT', 587)
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
-EMAIL_SUBJECT_PREFIX = '[%s] ' % SITE_NAME
+EMAIL_SUBJECT_PREFIX = f'[{SITE_NAME}] '
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-use-tls
 EMAIL_USE_TLS = True

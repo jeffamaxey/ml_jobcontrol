@@ -32,20 +32,7 @@ router.register(r'mlscore', views.MLScoreViewSet)
 router.register(r'users', views.UserViewSet)
 API_PREFIX = "api/v1"
 
-urlpatterns = patterns('',
-    #url(r'^$', TemplateView.as_view(template_name='base.html')),
-
-    # Examples:
-    # url(r'^$', 'ml_jobcontrol.views.home', name='home'),
-    url(r'^%s/' % API_PREFIX, include(router.urls)),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    #url(r'^admin/', include(admin.site.urls)),
-    
-)
+urlpatterns = patterns('', url(f'^{API_PREFIX}/', include(router.urls)))
 
 # Uncomment the next line to serve media files in dev.
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -57,7 +44,10 @@ if settings.DEBUG:
                             )
 
 # DRF authentication
-urlpatterns += patterns('',
-    url(r'^%s/api-auth/' % API_PREFIX, include('rest_framework.urls',
-                                     namespace='rest_framework')),
+urlpatterns += patterns(
+    '',
+    url(
+        f'^{API_PREFIX}/api-auth/',
+        include('rest_framework.urls', namespace='rest_framework'),
+    ),
 )

@@ -145,10 +145,11 @@ class RestApiUseCaseTests(APITestCase):
         my_job = response.data[0]
 
         # change jobs status from "todo" to "in_progress"
-        payload = {"status": "in_progress"}
-        payload["mlmodel_config"] =  my_job["mlmodel_config"]
-        payload["mlclassification_testset"] = \
-            my_job["mlclassification_testset"]
+        payload = {
+            "status": "in_progress",
+            "mlmodel_config": my_job["mlmodel_config"],
+            "mlclassification_testset": my_job["mlclassification_testset"],
+        }
         response = self.client.patch(my_job["url"], payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], "in_progress")
@@ -157,13 +158,14 @@ class RestApiUseCaseTests(APITestCase):
         mlresultscore_url = reverse("mlresultscore-list")
         mlscore_urls = [reverse("mlscore-detail",
             kwargs={"pk": mlscore.pk}) for mlscore in self.mlscores]
-        data = []
-        for num, mlscore_url in enumerate(mlscore_urls):
-            data.append({
+        data = [
+            {
                 "mljob": my_job["url"],
                 "mlscore": mlscore_url,
                 "score": 1.0 / float(num + 1),
-            })
+            }
+            for num, mlscore_url in enumerate(mlscore_urls)
+        ]
         response = self.client.post(mlresultscore_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -193,9 +195,10 @@ class RestApiUseCaseTests(APITestCase):
 
         # trying to change jobs status from "todo" to "in_progress"
         # should raise an conflict exception
-        payload = {"status": "in_progress"}
-        payload["mlmodel_config"] =  my_job["mlmodel_config"]
-        payload["mlclassification_testset"] = \
-            my_job["mlclassification_testset"]
+        payload = {
+            "status": "in_progress",
+            "mlmodel_config": my_job["mlmodel_config"],
+            "mlclassification_testset": my_job["mlclassification_testset"],
+        }
         response = self.client.patch(my_job["url"], payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
